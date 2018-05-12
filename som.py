@@ -292,7 +292,7 @@ class Element(Tree):
         Returns:
             Pattern: Image to select element.
         """
-        if not self._select_image
+        if not self._select_image:
             raise LookupError("Image to select isn't specified")
         return self._select_image
 
@@ -318,13 +318,20 @@ class Element(Tree):
         Returns:
             Pattern: Image to type text.
         """
-        if not self._text_image
+        if not self._text_image:
             raise LookupError("Image to type text isn't specified")
         return self._text_image
 
     @wait_for_visible
-    def set_text(self, text):
-        """Types text to element."""
+    def set_text(self, text, enter=False):
+        """Types text to element.
+        
+        Args:
+            text (str): Text which should be typed.
+            enter (bool): Flag to send ENTER after typing.
+        """
+        if enter:
+            text += SI.Key.ENTER
         self._region.type(self._text_image, text)
 
     @wait_for_visible
