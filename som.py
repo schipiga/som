@@ -284,6 +284,11 @@ class Element(Tree):
         """Clicks element."""
         self._region.click(self.click_image)
 
+    @wait_for_visible
+    def double_click(self):
+        """Clicks element double."""
+        self._region.doubleClick(self.click_image)
+
     @property
     def select_image(self):
         """Gets image to select element.
