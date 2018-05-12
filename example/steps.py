@@ -37,9 +37,11 @@ class Steps(object):
 
         if url.startswith("https://yandex"):
             self._ff.yandex.wait_for_visible()
+            self._ff.yandex.screenshot()
 
         if url.startswith("https://github"):
             self._ff.github.wait_for_visible()
+            self._ff.github.screenshot()
 
     def close_firefox(self):
         self._ff.close()

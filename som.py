@@ -29,10 +29,10 @@ import os.path as path
 import re
 import signal
 import shlex
+import shutil
 import subprocess
 import sys
 import time
-import uuid
 import weakref
 
 
@@ -352,16 +352,20 @@ class Element(Tree):
         Args:
             dir (str): Path to folder to save screenshot. Current work directory
                 is default.
-            filename (str): Name of screeshot file. UUID.png is default.
+            filename (str): Name of screeshot file. ElementName.png is default.
 
         Returns:
             str: Path to saved image.
         """
         dir = dir or os.getcwd()
-        filename = filename or str(uuid.uuid4())
+        filename = filename or self._name
         if not filename.endswith(".png"):
             filename += ".png"
-        return self._region.getScreen().capture(self, dir, filename)
+        filepath = path.join(dir, filename)
+
+        image = self._region.getScreen().capture(self._region)
+        shutil.move(image.filename, filepath)
+        return filepath
 
     @property
     @wait_for_visible
