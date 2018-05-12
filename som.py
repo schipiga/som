@@ -28,7 +28,6 @@ import os
 import os.path as path
 import re
 import signal
-import shlex
 import shutil
 import subprocess
 import sys
@@ -90,9 +89,9 @@ class Application(Tree):
         Args:
             cmd (str): Name or path (with arguments if needs) to application.
         """
-        self._cmd = shlex.split(cmd)
+        self._cmd = cmd
         self._p = None
-        self._is_win = system.getProperty('os.name').lower() == "windows"
+        self._is_win = "win" in system.getProperty('os.name').lower()
         self.is_visible = SI.SCREEN  # Hack to not break elements hierarchy.
 
     def launch(self):
@@ -100,7 +99,8 @@ class Application(Tree):
         if self._p:
             return
 
-        self._p = subprocess.Popen(self._cmd)
+        fnull = open(os.devnull, 'w')
+        self._p = subprocess.Popen(self._cmd, stdout=fnull, stderr=fnull)
 
     def close(self):
         """Closes application. Will be skipped if it is already closed."""
@@ -109,7 +109,7 @@ class Application(Tree):
 
         if (self._is_win):
             subprocess.check_call(
-                "taskkill /pid {} /T /F".format(self._p.pid), shell=True)
+                "taskkill /pid {} /T /F 1>NUL".format(self._p.pid), shell=True)
         else:
             os.kill(self._p.pid, signal.SIGTERM)
         self._p = None
