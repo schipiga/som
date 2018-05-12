@@ -52,6 +52,8 @@ def load_sikuli(cb=None):
     Args:
         cb (func): Callback function which passes sikuli module.
     """
+    # Sikuli import in module header breaks jython unittest (dunno why).
+    # That's why its import happens after unittest initialization.
     import sikuli
     global SI
     SI = sikuli

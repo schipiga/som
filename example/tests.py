@@ -1,12 +1,14 @@
+import os
 import sys
-sys.path.append("/home/user/vega/apps/sikuli/sikulix.jar/Lib")
-sys.path.append(".")
+sys.path.append(os.path.join(os.environ["CLASSPATH"], "Lib"))  # path to load sikuli
+sys.path.append(".")  # path to load example modules
 
 import unittest
 
 import steps
 
-
+# Steps instance will be here. It needs to create it after unittest initialization
+# because sikuli import breaks jython unittest module, dunno why.
 S = None
 
 
@@ -19,7 +21,9 @@ class MyTest(unittest.TestCase):
 
     def setUp(self):
         S.launch_firefox()
-        self.addCleanup(S.close_firefox)
+    
+    def tearDown(self):
+        S.close_firefox()
 
     def test_open_yandex(self):
         S.open_web_page("https://yandex.ru")
